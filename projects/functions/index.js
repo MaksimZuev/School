@@ -67,10 +67,8 @@ function fn(a) {
    console.log(f()); // выведет 13
  */
 function returnCounter(number) {
-  function number[a) {
-    
+ for (var number=0; number<=0; number++);
   }
-}
 
 /*
  Задание 5 *:
@@ -81,7 +79,9 @@ function returnCounter(number) {
  Пример:
    returnArgumentsArray(1, 2, 3) вернет [1, 2, 3]
  */
-function returnArgumentsArray() {}
+function returnArgumentsArray() {
+  
+}
 
 /*
  Задание 6 *:
