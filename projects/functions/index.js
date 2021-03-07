@@ -58,9 +58,9 @@ function returnFnResult(fn) {
    console.log(f()); // выведет 12
    console.log(f()); // выведет 13
  */
-function returnCounter(number = 0) {
+function returnCounter(x = 0) {
   return function f() {
-    return number + 1;
+    return ++x;
   };
 }
 /*
@@ -73,11 +73,11 @@ function returnCounter(number = 0) {
    returnArgumentsArray(1, 2, 3) вернет [1, 2, 3]
  */
 function returnArgumentsArray() {
-  const ar = [];
+  const result = [];
   for (let i = 0; i < arguments.lenght; i++) {
-    ar[i] = arguments[i];
+    result[i] = arguments[i];
   }
-  return ar;
+  return result;
 }
 /*
  Задание 6 *:
@@ -94,9 +94,9 @@ function returnArgumentsArray() {
 
    console.log(newSum()) выведет 6
  */
-function bindFunction(result, a, b) {
-  result = result.bind(result, a, b);
-  return result;
+function bindFunction(F, a, b) {
+  F = F.bind(null, a, b);
+  return F;
 }
 
 export {
