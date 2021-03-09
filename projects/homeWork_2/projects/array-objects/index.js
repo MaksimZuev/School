@@ -9,7 +9,11 @@
  Пример:
    forEach([1, 2, 3], (el) => console.log(el))
  */
-function forEach(array, fn) {}
+function forEach(array, fn) {
+  for (let i = 0; i < array.length; i++) {
+    fn(array[i], i, array);
+  }
+}
 
 /*
  Задание 2:
@@ -21,7 +25,6 @@ function forEach(array, fn) {}
    map([1, 2, 3], (el) => el ** 2) // [1, 4, 9]
  */
 function map(array, fn) {}
-
 /*
  Задание 3:
 
@@ -41,8 +44,14 @@ function reduce(array, fn, initial) {}
  Пример:
    upperProps({ name: 'Сергей', lastName: 'Петров' }) вернет ['NAME', 'LASTNAME']
  */
-function upperProps(obj) {}
-
+function upperProps(obj) {
+  const resust = [];
+  for (let key in obj) {
+    key = key.toUpperCase();
+    resust.push(key);
+  }
+  return resust;
+}
 /*
  Задание 5 *:
 
