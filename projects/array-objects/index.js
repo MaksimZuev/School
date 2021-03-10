@@ -11,7 +11,7 @@
  */
 function forEach(array, fn) {
   for (let i = 0; i < array.length; i++) {
-    fn(array[i], i, array);
+    fn(array[i]);
   }
 }
 
@@ -24,7 +24,14 @@ function forEach(array, fn) {
  Пример:
    map([1, 2, 3], (el) => el ** 2) // [1, 4, 9]
  */
-function map(array, fn) {}
+function map(array, fn) {
+  const result = [];
+  for (const key of array) {
+    const element = fn(key);
+    result.push(element);
+  }
+  return result;
+}
 /*
  Задание 3:
 
@@ -34,7 +41,11 @@ function map(array, fn) {}
  Пример:
    reduce([1, 2, 3], (all, current) => all + current) // 6
  */
-function reduce(array, fn, initial) {}
+function reduce(array, fn, initial) {
+  //for (let i = 0; i < array.length; i++);{
+  //  let i = fn(i, initial);
+  //}
+}
 
 /*
  Задание 4:
@@ -45,12 +56,12 @@ function reduce(array, fn, initial) {}
    upperProps({ name: 'Сергей', lastName: 'Петров' }) вернет ['NAME', 'LASTNAME']
  */
 function upperProps(obj) {
-  const resust = [];
-  for (let key in obj) {
-    key = key.toUpperCase();
-    resust.push(key);
+  const result = [];
+  for (const key in obj) {
+    const prop = key.toUpperCase();
+    result.push(prop);
   }
-  return resust;
+  return result;
 }
 /*
  Задание 5 *:
