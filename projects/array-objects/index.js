@@ -42,9 +42,14 @@ function map(array, fn) {
    reduce([1, 2, 3], (all, current) => all + current) // 6
  */
 function reduce(array, fn, initial) {
-  //for (let i = 0; i < array.length; i++);{
-  //  let i = fn(i, initial);
-  //}
+  const arr = [];
+  let result = 0;
+  for (const key of array) {
+    const all = fn(result, key);
+    result = all;
+    arr.push(all);
+  }
+  return arr;
 }
 
 /*
