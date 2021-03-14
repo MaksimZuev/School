@@ -1,5 +1,4 @@
 /* ДЗ 2 - работа с массивами и объектами */
-
 /*
  Задание 1:
 
@@ -42,9 +41,13 @@ function map(array, fn) {
    reduce([1, 2, 3], (all, current) => all + current) // 6
  */
 function reduce(array, fn, initial) {
-  //for (let i = 0; i < array.length; i++);{
-  //  let i = fn(i, initial);
-  //}
+  let result = 0;
+  for (initial; initial < array.length; initial++) {
+    if (initial < array.length) {
+      result = fn(result, array[initial]);
+    }
+  }
+  return result;
 }
 
 /*
