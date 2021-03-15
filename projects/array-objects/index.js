@@ -40,6 +40,7 @@ function map(array, fn) {
  Пример:
    reduce([1, 2, 3], (all, current) => all + current) // 6
  */
+
 function reduce(array, fn, initial) {
   let result = 0;
   for (initial; initial < array.length; initial++) {
