@@ -82,13 +82,11 @@ function returnBadArguments(fn, ...args) {
     throw new Error('fn is not a function');
   }
   const result = [];
-  const goodArgs = [];
-  for (let i = 1; i < args.length; i++) {
-    if (!fn(...args)) {
-      result.push(fn(...args));
-    }
-    if (fn(...args)) {
-      goodArgs.push(fn(...args));
+  for (let i = 1; i < arguments.length; i++) {
+    try {
+      fn(arguments[i]);
+    } catch (e) {
+      result.push(arguments[i]);
     }
   }
   return result;
