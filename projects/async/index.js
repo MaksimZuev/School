@@ -52,7 +52,9 @@ function loadTowns() {}
    isMatching('Moscow', 'SCO') // true
    isMatching('Moscow', 'Moscov') // false
  */
-function isMatching(full, chunk) {}
+function isMatching(full, chunk) {
+  return full.toLowerCase().includes(chunk.toLowerCase())
+}
 
 /* Блок с надписью "Загрузка" */
 const loadingBlock = homeworkContainer.querySelector('#loading-block');

@@ -12,7 +12,7 @@ function delayPromise(seconds) {
   return new Promise(function (resolve, reject) {
     setTimeout(function () {
         resolve();
-    }, seconds);
+    }, seconds * 1000);
 });
 }
 
@@ -29,6 +29,15 @@ function delayPromise(seconds) {
  Пример:
    loadAndSortTowns().then(towns => console.log(towns)) // должна вывести в консоль отсортированный массив городов
  */
-function loadAndSortTowns() {}
+function loadAndSortTowns() {
+  function compare(a, b) {
+    if (a.name > b.name) return 1; 
+    if (a.name == b.name) return 0; 
+    if (a.name < b.name) return -1; 
+  }
+  return fetch('https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json')
+  .then((response) => response.json())
+  .then((data) => data.sort(compare))
+}
 
 export { delayPromise, loadAndSortTowns };
