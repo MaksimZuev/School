@@ -143,7 +143,11 @@ function deleteTextNodesRecursive(where) {
  Постарайтесь не создавать глобальных переменных
 
  Пример:
-   Для дерева <div class="some-class-1"><b>привет!</b> <b class="some-class-1 some-class-2">loftschool</b></div>
+   Для дерева 
+   <div class="some-class-1">
+   <b>привет!</b>
+    <b class="some-class-1 some-class-2">loftschool</b>
+    </div>
    должен быть возвращен такой объект:
    {
      tags: { DIV: 1, B: 2},
@@ -151,7 +155,36 @@ function deleteTextNodesRecursive(where) {
      texts: 3
    }
  */
-function collectDOMStat(root) {}
+function collectDOMStat(root) {
+  const result = {
+    tags: {},
+    classes: {},
+    texts: 0,
+  };
+  function scan(root) {
+    for (const child of root.childNodes) {
+      if (child.nodeType === 3) {
+        result.texts++;
+      } else if (child.childNodes === 1) {
+        if (child.tagName === result.tags) {
+          result.tags++;
+        } else {
+          child.push(result.tags);
+        }
+      }
+      for (const clasinfo of child.classlist) {
+        if (clasinfo in result.classes) {
+          result.classes[clasinfo]++;
+        } else {
+          clasinfo.push(result.classes);
+        }
+      }
+      scan(child);
+    }
+  }
+  scan(root);
+  return result;
+}
 
 /*
  Задание 8 *:
