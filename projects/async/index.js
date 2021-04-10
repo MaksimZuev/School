@@ -39,7 +39,16 @@ const homeworkContainer = document.querySelector('#app');
  Массив городов пожно получить отправив асинхронный запрос по адресу
  https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json
  */
-function loadTowns() {}
+function loadTowns() {
+  function compare(a, b) {
+    if (a.name > b.name) return 1;
+    if (a.name === b.name) return 0;
+    if (a.name < b.name) return -1;
+  }
+  return fetch('https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json')
+    .then((response) => response.json())
+    .then((data) => data.sort(compare));
+}
 
 /*
  Функция должна проверять встречается ли подстрока chunk в строке full
@@ -53,7 +62,7 @@ function loadTowns() {}
    isMatching('Moscow', 'Moscov') // false
  */
 function isMatching(full, chunk) {
-  return full.toLowerCase().includes(chunk.toLowerCase())
+  return full.toLowerCase().includes(chunk.toLowerCase());
 }
 
 /* Блок с надписью "Загрузка" */
@@ -68,9 +77,47 @@ const filterBlock = homeworkContainer.querySelector('#filter-block');
 const filterInput = homeworkContainer.querySelector('#filter-input');
 /* Блок с результатами поиска */
 const filterResult = homeworkContainer.querySelector('#filter-result');
+let towns = [];
 
-retryButton.addEventListener('click', () => {});
+retryButton.addEventListener('click', () => {
+  Load();
+});
 
-filterInput.addEventListener('input', function () {});
+filterInput.addEventListener('input', function () {
+  updateFilter(this.value);
+});
+
+loadingFailedBlock.classList.add('hidden');
+filterBlock.classList.add('hidden');
+
+async function Load() {
+  try {
+    towns = await loadTowns();
+    loadingBlock.classList.add('hidden');
+    loadingFailedBlock.classList.add('hidden');
+    filterBlock.classList.remove('hidden');
+  } catch (e) {
+    loadingBlock.classList.add('hidden');
+    loadingFailedBlock.classList.remove('hidden');
+  }
+}
+
+function updateFilter(filterValue) {
+  filterResult.innerHTML = '';
+
+  const fragment = document.createDocumentFragment();
+
+  for (const city of towns) {
+    if (filterValue && isMatching(city.name, filterValue)) {
+      const cityDiv = document.createElement('div');
+      cityDiv.textContent = city.name;
+      fragment.append(cityDiv);
+    }
+  }
+
+  filterResult.append(fragment);
+}
+
+Load();
 
 export { loadTowns, isMatching };
