@@ -23,9 +23,9 @@
  Запрещено использовать сторонние библиотеки. Разрешено пользоваться только тем, что встроено в браузер
  */
 
- import './cookie.html';
+import './cookie.html';
 
- /*
+/*
   app - это контейнер для всех ваших домашних заданий
   Если вы создаете новые html-элементы и добавляете их на страницу, то добавляйте их только в этот контейнер
  
@@ -33,111 +33,104 @@
     const newDiv = document.createElement('div');
     homeworkContainer.appendChild(newDiv);
   */
- const homeworkContainer = document.querySelector('#app');
- // текстовое поле для фильтрации cookie
- const filterNameInput = homeworkContainer.querySelector('#filter-name-input');
- // текстовое поле с именем cookie
- const addNameInput = homeworkContainer.querySelector('#add-name-input');
- // текстовое поле со значением cookie
- const addValueInput = homeworkContainer.querySelector('#add-value-input');
- // кнопка "добавить cookie"
- const addButton = homeworkContainer.querySelector('#add-button');
- // таблица со списком cookie
- const listTable = homeworkContainer.querySelector('#list-table tbody');
- const listBody = homeworkContainer.querySelector('#list-body')
- 
- const cookieObj = getCookie()
- 
- function getCookie(name) {
-   var matches = document.cookie
-   .match(new RegExp("(?:^|; )" + name
-   .replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
-   return matches ? decodeURIComponent(matches[1]) : undefined;
- }
- 
- // const cookies = document.cookie.split('; ').reduce((prev, current) => {
- //   const [name, value] = current.split('=');
- //   prev[name] = value;
- //   return prev;
- // }, {});
- 
- resultTable()
- 
- filterNameInput.addEventListener('input', function () {});
- 
- addButton.addEventListener('click', () => {
-   document.cookie = `${addNameInput.value}=${addValueInput.value}`;
-   addNameInput.value = '';
-   addValueInput.value = '';
- });
- 
- listTable.addEventListener('click', (e) => {});
- 
- 
- 
- 
- function resultTable(params) {
-   const fragment = document.createDocumentFragment();
-   let total = 0;
- 
-   listTable.innerHTML = '';
- 
-   for (const [name, value] of cookieObj) {
-     if (
-       filterValue &&
-       !name.toLowerCase().includes(filterValue.toLowerCase()) &&
-       !value.toLowerCase().includes(filterValue.toLowerCase())
-     ) {
-       continue;
-     }
- 
-     total++;
- 
-     const tr = document.createElement('tr');
-     const nameTD = document.createElement('td');
-     const valueTD = document.createElement('td');
-     const removeTD = document.createElement('td');
-     const removeButton = document.createElement('button');
- 
-     removeButton.dataset.role = 'remove-cookie';
-     removeButton.dataset.cookieName = name;
-     removeButton.textContent = 'Удалить';
-     nameTD.textContent = name;
-     valueTD.textContent = value;
-     valueTD.classList.add('value');
-     tr.append(nameTD, valueTD, removeTD);
-     removeTD.append(removeButton);
- 
-     fragment.append(tr);
-   }
- 
-   if (total) {
-     listTable.parentNode.classList.remove('hidden');
-     listTable.append(fragment);
-   } else {
-     listTable.parentNode.classList.add('hidden');
-   }
- }
- 
- 
- 
- 
- // {
- //   const fragment = document.createDocumentFragment()
- 
- //  const newTr = document.createElement('tr')
- //  const nameTr = document.createElement('td')
- //  const valueTr = document.createElement('td')
- //  const deleteTr = document.createElement('td')
- //  const buttonDelete = document.createElement('button')
- 
- //  nameTr.textContent = cookies.name
- //  valueTr.textContent = cookies.value
- //  deleteTr.textContent = "удалить"
- //  buttonDelete.append(deleteTr)
- 
- //  newTr.append(nameTr, valueTr, buttonDelete)
- //  fragment.append(newTr)
- //  listTable.append(fragment)
- // }
- 
+const homeworkContainer = document.querySelector('#app');
+// текстовое поле для фильтрации cookie
+const filterNameInput = homeworkContainer.querySelector('#filter-name-input');
+// текстовое поле с именем cookie
+const addNameInput = homeworkContainer.querySelector('#add-name-input');
+// текстовое поле со значением cookie
+const addValueInput = homeworkContainer.querySelector('#add-value-input');
+// кнопка "добавить cookie"
+const addButton = homeworkContainer.querySelector('#add-button');
+// таблица со списком cookie
+const listTable = homeworkContainer.querySelector('#list-table tbody');
+//const listBody = homeworkContainer.querySelector('#list-body')
+
+const cookiesObj = takeCookies();
+let stringFilterValue = '';
+
+function takeCookies() {
+  return document.cookie
+    .split('; ')
+    .filter(Boolean)
+    .map((cookie) => cookie.match(/^([^=]+)=(.+)/))
+    .reduce((obj, [, name, value]) => {
+      obj.set(name, value);
+
+      return obj;
+    }, new Map());
+}
+
+refreshResult();
+
+filterNameInput.addEventListener('input', function () {
+  stringFilterValue = this.value;
+  refreshResult();
+});
+
+addButton.addEventListener('click', () => {
+  const name = encodeURIComponent(addNameInput.value.trim());
+  const value = encodeURIComponent(addValueInput.value.trim());
+
+  if (!name) {
+    return;
+  }
+
+  document.cookie = `${name}=${value}`;
+  cookiesObj.set(name, value);
+
+  refreshResult();
+});
+
+listTable.addEventListener('click', (e) => {
+  const { role, cookieName } = e.target.dataset;
+
+  if (role === 'delete-cookie') {
+    cookiesObj.delete(cookieName);
+    document.cookie = `${cookieName}=deleted; max-age=0`;
+    refreshResult();
+  }
+});
+
+function refreshResult() {
+  const fragment = document.createDocumentFragment();
+  let all = 0;
+
+  listTable.innerHTML = '';
+
+  for (const [name, value] of cookiesObj) {
+    if (
+      stringFilterValue &&
+      !name.toLowerCase().includes(stringFilterValue.toLowerCase()) &&
+      !value.toLowerCase().includes(stringFilterValue.toLowerCase())
+    ) {
+      continue;
+    }
+
+    all++;
+
+    const tr = document.createElement('tr');
+    const nameTD = document.createElement('td');
+    const valueTD = document.createElement('td');
+    const removeTD = document.createElement('td');
+    const removeButton = document.createElement('button');
+
+    removeButton.dataset.role = 'delete-cookie';
+    removeButton.dataset.cookieName = name;
+    removeButton.textContent = 'Вычеркнуть';
+    nameTD.textContent = name;
+    valueTD.textContent = value;
+    valueTD.classList.add('value');
+    tr.append(nameTD, valueTD, removeTD);
+    removeTD.append(removeButton);
+
+    fragment.append(tr);
+  }
+
+  if (all) {
+    listTable.parentNode.classList.remove('hidden');
+    listTable.append(fragment);
+  } else {
+    listTable.parentNode.classList.add('hidden');
+  }
+}
